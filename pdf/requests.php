@@ -5,12 +5,27 @@
 // @ini_set('display_errors', 0);
 error_reporting(E_ALL);
 @ini_set('display_errors', 1);
-require_once "../config/connection.php";
+// require_once "../config/connection.php";
 require_once "../assets/plugins/fpdf/fpdf.php";
+
+$Hostname   = '';
+$servername = "192.168.101.68";
+$database = "ISHIFT_PICKLIST";
+$username = "sa";
+$password = "SB1Admin";
+try {
+    $conn = new PDO("sqlsrv:server=$servername;database=$database;TrustServerCertificate=true", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    errorHandler(E_WARNING, $e->getMessage(), $e->getFile(), $e->getLine());
+    echo "Connection failed: " . $e->getMessage();
+}
+
 session_start();
 
 
-$PkList_Num = $_GET['PkList_Num'];
+// $PkList_Num = $_GET['PkList_Num'];
+$PkList_Num = $_POST['PkList_Num'];
 $Uid = $_SESSION['Uid'];
 
 try {
@@ -31,9 +46,13 @@ try {
 
     $picklistData->closeCursor();
 
-    
+    $docDate = isset($picklistHeader['PickedDate'])
+        ? date("m/d/Y", strtotime($picklistHeader['PickedDate']))
+        : "N/A";
 
     $textColor = [50, 50, 50];
+
+    // $executedby = $picklistHeader['Executedby'] ?? '';
 
     class PDF extends FPDF
     {
@@ -126,7 +145,7 @@ try {
     $pdf = new PDF();
     $pdf->AliasNbPages();
 
-    function headerDetails($pdf, $picklistNum, $docDate, $category = '')
+    function headerDetails($pdf, $PkList_Num, $docDate, $category = '')
     {
         global $textColor;
         $labelWidth = 15;
@@ -135,7 +154,7 @@ try {
         $pdf->SetFont('Arial', 'B', 9);
         $pdf->Cell($labelWidth, 5, 'Picklist ', 0, 0);
         $pdf->Cell($colonWidth, 5, ':', 0, 0, 'C');
-        $pdf->Cell(0, 5, $picklistNum, 0, 1);
+        $pdf->Cell(0, 5, $PkList_Num, 0, 1);
         /* ---------- ROW 3 (CATEGORY) ---------- */
         if (!empty($category)) {
             $pdf->SetFont('Arial', 'B', 9);
@@ -150,7 +169,7 @@ try {
         $pdf->Ln(1);
     }
 
-    function renderItemsTable($pdf, $picklistNum, $itemData, $textColor)
+    function renderItemsTable($pdf, $PkList_Num, $picklistItems, $textColor)
     {
         /* ---------- TITLE ---------- */
 
@@ -183,14 +202,16 @@ try {
 
         $groupedItems = [];
 
-        foreach ($itemData as $row) {
-            $modelRaw = $row->Req_ItemName ?? '';
-            $brandRaw = $row->Req_ItemBrand ?? '';
-            $categoryRaw = $row->Req_ItemCategory ?? '';
-            $quantity = (int)($row->Req_Item_Qty ?? 0);
-            $actual = isset($row->Actual_Item_Qty) && $row->Actual_Item_Qty !== ''
-                // ? $row->Actual_Item_Qty : null;
-                ? $row->Actual_Item_Qty : 0;
+        foreach ($picklistItems as $row) {
+            $modelRaw = $row['ItemModel'] ?? '';
+            $brandRaw = $row['ItemBrand'] ?? '';
+            $categoryRaw = $row['ItemCategory'] ?? '';
+            $quantity = (int)($row['BrnchCollectionRequest'] ?? 0);
+            // $actual = isset($row['BrnchCollectionRequest'])
+            //     && $row['BrnchCollectionRequest'] !== ''
+            //     ? $row['BrnchCollectionRequest']
+            //     : 0;
+            $actual = '';
 
             $key = $modelRaw . '|' . $brandRaw . '|' . $categoryRaw;
 
@@ -271,11 +292,9 @@ try {
 
             // Actual Qty
             $pdf->SetXY($x + $headers['#'] + $headers['Category'] + $headers['Model'] + $headers['Brand'] + $headers['Quantity'], $y);
-            // $pdf->MultiCell($headers['Actual Qty'], $lineHeight, $row['Actual'] !== null ? $row['Actual'] : '', 0, 'C');
             $pdf->MultiCell(
                 $headers['Actual Qty'],
                 $lineHeight,
-                // ($row['Actual'] > 0) ? $row['Actual'] : '',
                 ($row['Actual'] > 0) ? $row['Actual'] : 0,
                 0,
                 'C'
@@ -287,7 +306,8 @@ try {
         }
     }
 
-    function bottomLeftDetails($pdf, $executedby, $picklistItems, $printedby, $timestamp, $textColor)
+    // function bottomLeftDetails($pdf, $picklistItems, $textColor)
+    function bottomLeftDetails($pdf, $picklistHeader, $branchData, $textColor)
     {
         $pdf->SetTextColor($textColor[0], $textColor[1], $textColor[2]);
         $pdf->Ln(5); // gap after table
@@ -308,9 +328,9 @@ try {
         $pdf->SetFont('Arial', '', 9);
         $lines = [];
 
-        foreach ($picklistItems as $item) {
-            $branch = $item->Req_Branch ?? '';
-            $srn = $item->SR_Number ?? '';
+        foreach ($branchData as $item) {
+            $branch = $item['Destination_Loc'] ?? '';
+            $srn = $item['SR_Num'] ?? '';
 
             if ($branch || $srn) {
                 $lines[] = "{$branch} - {$srn}";
@@ -333,23 +353,23 @@ try {
 
         $pdf->SetX($leftX);
         $pdf->SetFont('Arial', '', 9);
-        $pdf->Cell(0, 5, $printedby, 0, 1);
+        $pdf->Cell(0, 5, $picklistHeader['Configby'], 0, 1);
 
         $pdf->SetX($leftX);
-        $pdf->Cell(0, 5, $timestamp, 0, 1);
+        $pdf->Cell(0, 5, '10/13/2026', 0, 1);
 
 
         /** ---------------- RIGHT COLUMN ---------------- **/
         $pdf->SetXY($rightX, $startY);
 
-        if ($executedby && !empty($executedby)) {
+        if ($picklistHeader['Executedby'] && !empty($picklistHeader['Executedby'])) {
             // Executed By
             $pdf->SetFont('Arial', 'B', 9);
             $pdf->Cell(60, 5, 'Executed by', 0, 1);
 
             $pdf->SetX($rightX);
             $pdf->SetFont('Arial', '', 9);
-            $pdf->Cell(60, 5, $executedby, 0, 1);
+            $pdf->Cell(60, 5, $picklistHeader['Executedby'], 0, 1);
         }
 
         $pdf->Ln(3);
@@ -357,8 +377,8 @@ try {
 
     $categorizedItems = [];
 
-    foreach ($itemData as $item) {
-        $category = $item->Req_ItemCategory ?? 'Uncategorized';
+    foreach ($picklistItems as $item) {
+        $category = $item['ItemCategory'] ?? 'Uncategorized';
 
         if (!isset($categorizedItems[$category])) {
             $categorizedItems[$category] = [];
@@ -367,23 +387,15 @@ try {
         $categorizedItems[$category][] = $item;
     }
 
-    // if ($groupByCategory) {
-    //     foreach ($categorizedItems as $category => $items) {
-    //         $pdf->categoryTitle = $category;
-    //         $pdf->AddPage();
-    //         headerDetails($pdf, $picklistNum, $docDate, $category);
-    //         renderItemsTable($pdf, $picklistNum, $items, $textColor);
-    //         bottomLeftDetails($pdf, $executedby, $items, $printedby, $timestamp, $textColor);
-    //     }
-    // } else {
-        $pdf->categoryTitle = '';
-        $pdf->AddPage();
-        headerDetails($pdf, $picklistNum, $docDate, '');
-        renderItemsTable($pdf, $picklistNum, $itemData, $textColor);
-        bottomLeftDetails($pdf, $executedby, $picklistItems, $printedby, $timestamp, $textColor);
+    $pdf->categoryTitle = '';
+    $pdf->AddPage();
+    headerDetails($pdf, $PkList_Num, $docDate, '');
+    renderItemsTable($pdf, $PkList_Num, $picklistItems, $textColor);
+    // bottomLeftDetails($pdf, $executedby, $picklistHeader, $branchData, $textColor);
+    bottomLeftDetails($pdf, $picklistHeader, $branchData, $textColor);
     // }
     ob_end_clean();
-    $pdf->Output('I', $picklistNum . '.pdf');
+    $pdf->Output('I', $PkList_Num . '.pdf');
 } catch (PDOException $e) {
     // $conn->rollBack();
     errorHandler(E_WARNING, $e->getMessage(), $e->getFile(), $e->getLine());

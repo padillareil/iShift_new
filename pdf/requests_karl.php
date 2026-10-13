@@ -1,28 +1,23 @@
 <?php
 
-// ob_start();
-// error_reporting(0);
-// @ini_set('display_errors', 0);
 error_reporting(E_ALL);
 @ini_set('display_errors', 1);
 require_once "../config/connection.php";
 require_once "../assets/plugins/fpdf/fpdf.php";
 session_start();
 
-if (!isset($_GET['DocEntry']) || empty($_SESSION['Uid'])) {
+if (!isset($_GET['PkList_Num']) || empty($_SESSION['Uid'])) {
     Header("Location: dirs/outgoing/dashboard/outgoing.php");
     return;
 }
 
-$DocEntry = $_GET['DocEntry'];
-$executedBy = $_GET['executedBy'] ?? '';
+$picklist = $_GET['PkList_Num'];
 $Uid = $_SESSION['Uid'];
-// $groupByCategory = isset($_GET['groupByCategory']) && $_GET['groupByCategory'] == 1;
 
 try {
 
-    $picklistData = $conn->prepare("EXEC dbo.[PDF_Picklist_Items] ?, ?");
-    $picklistData->execute([$Uid, $DocEntry]);
+    $picklistData = $conn->prepare("EXEC dbo.[Picklist_PDF] ?, ?");
+    $picklistData->execute([$Uid, $picklist]);
 
     $picklistHeader = $picklistData->fetch(PDO::FETCH_OBJ);
 
@@ -385,11 +380,11 @@ try {
     //         bottomLeftDetails($pdf, $executedby, $items, $printedby, $timestamp, $textColor);
     //     }
     // } else {
-        $pdf->categoryTitle = '';
-        $pdf->AddPage();
-        headerDetails($pdf, $picklistNum, $docDate, '');
-        renderItemsTable($pdf, $picklistNum, $itemData, $textColor);
-        bottomLeftDetails($pdf, $executedby, $picklistItems, $printedby, $timestamp, $textColor);
+    $pdf->categoryTitle = '';
+    $pdf->AddPage();
+    headerDetails($pdf, $picklistNum, $docDate, '');
+    renderItemsTable($pdf, $picklistNum, $itemData, $textColor);
+    bottomLeftDetails($pdf, $executedby, $picklistItems, $printedby, $timestamp, $textColor);
     // }
     ob_end_clean();
     $pdf->Output('I', $picklistNum . '.pdf');
