@@ -36,7 +36,7 @@ try {
 
 }
 ?>
-<input type="text" name="picklistNumber" id="picklistNumber" class="form-control form-control-sm" style="background: #F7F7F7;" readonly required value="<?php echo htmlspecialchars($Latestnum); ?>">
+<input type="hidden" name="picklistNumber" id="picklistNumber" class="form-control form-control-sm" style="background: #F7F7F7;" readonly required value="<?php echo htmlspecialchars($Latestnum); ?>">
 <input type="hidden" name="origin_branch d-none" id="origin_branch" value="<?php echo $user['Branch']?>">
 <div class="container-fluid">
 	<div class="d-flex justify-content-between align-items-center mb-3">
@@ -486,6 +486,7 @@ try {
                     }).then(function (result) {
                         if (result.isConfirmed) {
                             loadIncoming();
+                            loadPicklistCreated();/*Refersh the badge of Picklist items*/
                         }
                     });
                     return;

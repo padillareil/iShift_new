@@ -215,8 +215,8 @@
                               </button>
                               <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" href="#" onclick="applyAssignment('${item.PkList_Num}')" title="Assign Quantity">
-                                        <i class="bi bi-arrow-right-circle me-2"></i>Assign Quantity
+                                    <a class="dropdown-item" href="#" onclick="encodePicklist('${item.PkList_Num}')" title="Encode Quantity">
+                                        <i class="bi bi-card-list me-2"></i>Encode Quantity
                                     </a>
                                 </li>
 
@@ -351,15 +351,73 @@
               loadPicklistCreated($(this).data("page"));
           });
 
-          /*Function to set assignment the picklist document*/
-          function applyAssignment(PkList_Num) {
-              $.post("dirs/incoming/components/item_assign.php", {
-                  PkList_Num :PkList_Num
+
+
+          /*Function to set picklist items*/
+          function encodePicklist(PkList_Num) {
+              $.post("dirs/incoming/components/picklist_form.php", {
               }, function (data){
+                $("#picklistNumber_encode").val(PkList_Num);
                   $("#main-content").html(data);
+                  // loadRequest_Items();
               });
           }
 
+          /* Function to display all request items ready for picklist */
+          function loadRequest_Items(Rownum) {
+              $.post("dirs/incoming/actions/get_itemrequest.php", {
+                  Rownum: Rownum
+              }, function (data) {
+                  var response = typeof data === "string" ? JSON.parse(data) : data;
+
+                  if (jQuery.trim(response.isSuccess) === "success") {
+                      const itemDisplay = $("#load_picklist_items");
+                      itemDisplay.empty(); // Clear previous rows if needed
+
+                      // Iterate through response data array
+                      const items = response.Data || response.data || response;
+
+                      items.forEach(item => {
+                          itemDisplay.append(`
+                              <tr>
+                                  <td class="text-center font-weight-bold text-muted item_number">
+                                      ${item.Numbering ?? '--'}
+                                  <input type="number" class="d-none item_mothernumber" value="${item.DocEntry ?? 0}"> 
+                                  </td>
+                                  <td>
+                                      <div class="text-center item_category">
+                                          ${item.Category ?? '--'}
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div class="text-center item-brand item_brand">
+                                          ${item.Brand ?? '--'}
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div class="text-center item-model">
+                                          ${item.Model ?? '--'}
+                                      </div>
+                                  </td>
+                                  <td>
+                                      <div class="text-center item_quantity">
+                                          ${item.RequestQuantity ?? 0}
+                                      </div>
+                                  </td>
+                                  <td style="background-color: #fcf7d4;">
+                                      <div class="text-center">
+                                          <input type="number" class="form-control form-control-sm text-center item_issued_qty" min="0" step="1" value="0">
+                                      </div>
+                                  </td>
+                              </tr>
+                          `);
+                      });
+
+                  } else {
+                      console.log(jQuery.trim(response.Data));
+                  }
+              });
+          }
 
 
 </script>

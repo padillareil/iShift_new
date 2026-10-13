@@ -1,5 +1,0 @@
-[2026-10-13 14:41:27] Error: [2] Undefined array key "Collector" in C:\xampp\htdocs\iShift\dirs\incoming\actions\save_picklistsetup.php on line 6
-[2026-10-13 14:41:27] Error: [8192] strtoupper(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\iShift\dirs\incoming\actions\save_picklistsetup.php on line 6
-[2026-10-13 14:41:27] Error: [2] Undefined variable $RowNum in C:\xampp\htdocs\iShift\dirs\incoming\actions\save_picklistsetup.php on line 26
-[2026-10-13 14:46:15] Error: [2] Undefined variable $RowNum in C:\xampp\htdocs\iShift\dirs\incoming\actions\save_picklistsetup.php on line 24
-[2026-10-13 14:46:25] Error: [2] Undefined variable $RowNum in C:\xampp\htdocs\iShift\dirs\incoming\actions\save_picklistsetup.php on line 24

@@ -52,9 +52,6 @@ function loadDispatching() {
     });
 }
 
-
-
-
 /*Function to validate encoding quantity*/
 $(document).on("input", ".item_issued_qty", function () {
     const $input = $(this);

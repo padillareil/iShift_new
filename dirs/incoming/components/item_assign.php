@@ -19,7 +19,7 @@ try {
     $Branch = $user['Branch'];
 
     // Generate next Picklist number
-    $fetch_pknum = $conn->prepare(
+    $fetch_pknum = $conn->prepare(  
         "EXEC [ISHIFT_ASSIGNMENT].[dbo].[Generate_ASGN_Number] ?"
     );
     $fetch_pknum->execute([$Branch]);
