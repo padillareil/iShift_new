@@ -1,0 +1,8 @@
+[2026-10-12 14:30:04] Error: [2] Undefined array key "PkList_Num" in C:\xampp\htdocs\iShift\pdf\requests.php on line 17
+[2026-10-12 14:30:04] Error: [2] SQLSTATE[42000]: [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not find stored procedure 'dbo.Picklist_PDF'. in C:\xampp\htdocs\iShift\pdf\requests.php on line 25
+[2026-10-12 14:34:24] Error: [2] Undefined array key "PkList_Num" in C:\xampp\htdocs\iShift\pdf\requests.php on line 13
+[2026-10-12 14:34:24] Error: [2] SQLSTATE[42000]: [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not find stored procedure 'dbo.Picklist_PDF'. in C:\xampp\htdocs\iShift\pdf\requests.php on line 19
+[2026-10-12 14:36:16] Error: [2] Undefined array key "PkList_Num" in C:\xampp\htdocs\iShift\pdf\requests.php on line 13
+[2026-10-12 14:36:16] Error: [2] SQLSTATE[42000]: [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not find stored procedure 'dbo.Picklist_PDF'. in C:\xampp\htdocs\iShift\pdf\requests.php on line 19
+[2026-10-12 14:36:22] Error: [2] Undefined array key "PkList_Num" in C:\xampp\htdocs\iShift\pdf\requests.php on line 13
+[2026-10-12 14:36:22] Error: [2] SQLSTATE[42000]: [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Could not find stored procedure 'dbo.Picklist_PDF'. in C:\xampp\htdocs\iShift\pdf\requests.php on line 19

@@ -1,0 +1,44 @@
+<ul class="nav nav-tabs nav-tabs-bordered d-flex mt-5" id="borderedTabJustified" role="tablist">
+    <li class="nav-item flex-fill" role="presentation">
+        <button class="nav-link w-100 active" id="unassigned-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-all" type="button" role="tab" aria-controls="all" aria-selected="true">Unassigned</button>
+    </li>
+    <li class="nav-item flex-fill" role="presentation">
+        <button class="nav-link w-100" id="assigned-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-assigned" type="button" role="tab" aria-controls="assigned" aria-selected="false">Assigned</button>
+    </li>
+</ul>
+<div class="tab-content pt-2" id="borderedTabJustifiedContent">
+    <div class="tab-pane fade show active" id="bordered-justified-all" role="tabpanel" aria-labelledby="all-tab">
+        <div class="table-responsive-md">
+            <table class="table datatables table-hover" id="basketTableDashboard">
+                <thead class="sticky-top">
+                    <tr>
+                        <th></th>
+                        <th class="text-secondary text-center">Picklist No.</th>
+                        <th class="text-secondary text-center">Quantity</th>
+                        <th class="text-secondary">Status</th>
+                        <th class="text-secondary"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="bordered-justified-assigned" role="tabpanel" aria-labelledby="assigned-tab">
+        <div class="table-responsive-md">
+            <table class="table datatables table-hover border border-secondary-subtle" id="basketTableAssigned">
+                <thead class="sticky-top">
+                    <tr>
+                        <th></th>
+                        <th class="text-secondary text-center">Picklist No.</th>
+                        <th class="text-secondary text-center">Quantity</th>
+                        <th class="text-secondary">Status</th>
+                        <th class="text-secondary"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

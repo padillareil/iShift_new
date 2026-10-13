@@ -1,0 +1,40 @@
+Freezing feature control for stock request - effects modal show only and database driven architecture.
+
+
+
+isFreeze = 1 true 0 False
+
+
+Add Columns "AssignQty"
+			"AssignedBy"
+			"Assigned_Date"
+			"isLodingBasket" 1 or 0	 
+
+
+
+Todo Tommorow @ Miag-ao
+
+
+to setup quantity user must double click the row then modal will show then encode qty then the query at the back will send a ItemCode and Qty top 1 then return StocksQty 
+
+
+
+
+Picklist-> Generate A PDF list to gather given items
+	Assign Items Qty - Encode qty to designated branch
+
+
+for intransit for delivery on query it will be use the Serial then find on ownstock the serial and model with greater than 2 stock quantity then if not then show prompt "No Stocks Available"			
+	-Then print list of items instransit PDF as their guide and official document for receiving purposes.
+
+
+Receiving - then scan item then validate using the request created but before that user will select the request created then show form for receiving.
+
+
+
+MOnitoring stocks Transfer
+
+Requesting Branch -> Picked Sched -> Assigned Sched -> Intransit Sched -> Received Sched then repeat 
+
+
+

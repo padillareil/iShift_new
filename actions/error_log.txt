@@ -1,0 +1,5 @@
+[2026-09-24 23:11:00] Error: [2] SQLSTATE[08001]: [Microsoft][ODBC Driver 17 for SQL Server]Unable to complete login process due to delay in opening server connection in C:\xampp\htdocs\iShift\config\connection.php on line 18
+[2026-09-24 23:11:00] Error: [2] Undefined variable $conn in C:\xampp\htdocs\iShift\actions\relogin.php on line 9
+[2026-09-25 23:09:10] Error: [2] SQLSTATE[08001]: [Microsoft][ODBC Driver 17 for SQL Server]Named Pipes Provider: Could not open a connection to SQL Server [64].  in C:\xampp\htdocs\iShift\config\connection.php on line 18
+[2026-09-25 23:09:10] Error: [2] Undefined variable $conn in C:\xampp\htdocs\iShift\actions\relogin.php on line 9
+[2026-09-29 15:54:49] Error: [2] Undefined array key "Uid" in C:\xampp\htdocs\iShift\actions\logout.php on line 4
